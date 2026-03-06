@@ -1,27 +1,27 @@
-
 /*
 ===============================================================================
-Dimensions Exploration
+Date Range Exploration 
 ===============================================================================
 Purpose:
-    - To explore the structure of dimension tables.
-	
+    - To determine the temporal boundaries of key data points.
+    - To understand the range of historical data.
+
 SQL Functions Used:
-    - DISTINCT
-    - ORDER BY
+    - MIN(), MAX(), DATEDIFF()
 ===============================================================================
 */
 
--- Retrieve a list of unique countries from which customers originate
-SELECT DISTINCT 
-    country 
-FROM gold.dim_customers
-ORDER BY country;
+-- Determine the first and last order date and the total duration in months
+SELECT 
+    MIN(order_date) AS first_order_date,
+    MAX(order_date) AS last_order_date,
+    DATEDIFF(MONTH, MIN(order_date), MAX(order_date)) AS order_range_months
+FROM gold.fact_sales;
 
--- Retrieve a list of unique categories, subcategories, and products
-SELECT DISTINCT 
-    category, 
-    subcategory, 
-    product_name 
-FROM gold.dim_products
-ORDER BY category, subcategory, product_name;
+-- Find the youngest and oldest customer based on birthdate
+SELECT
+    MIN(birthdate) AS oldest_birthdate,
+    DATEDIFF(YEAR, MIN(birthdate), GETDATE()) AS oldest_age,
+    MAX(birthdate) AS youngest_birthdate,
+    DATEDIFF(YEAR, MAX(birthdate), GETDATE()) AS youngest_age
+FROM gold.dim_customers;
